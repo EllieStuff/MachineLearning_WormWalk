@@ -12,10 +12,11 @@ public class WormAgent : Agent
     [Header("Target Prefabs")] public Transform TargetPrefab; //Target prefab to use in Dynamic envs
     private Transform m_Target; //Target the agent will walk towards during training.
 
-    [Header("Body Parts")] public Transform bodySegment0;
-    public Transform bodySegment1;
-    public Transform bodySegment2;
-    public Transform bodySegment3;
+    [Header("Body Parts")] public Transform[] bodySegments; 
+    //public Transform bodySegment0;
+    //public Transform bodySegment1;
+    //public Transform bodySegment2;
+    //public Transform bodySegment3;
 
     //This will be used as a stabilized model space reference point for observations
     //Because ragdolls can move erratically during training, using a stabilized reference transform improves learning
@@ -31,18 +32,27 @@ public class WormAgent : Agent
     {
         SpawnTarget(TargetPrefab, transform.position); //spawn target
 
-        m_StartingPos = bodySegment0.position;
+        m_StartingPos = bodySegments[0].position;
+        //m_StartingPos = bodySegment0.position;
         m_OrientationCube = GetComponentInChildren<OrientationCubeController>();
         m_DirectionIndicator = GetComponentInChildren<DirectionIndicator>();
         m_JdController = GetComponent<JointDriveController>();
 
         UpdateOrientationObjects();
-
+        int rnd = Random.Range(3, bodySegments.Length - 1);
         //Setup each body part
-        m_JdController.SetupBodyPart(bodySegment0);
-        m_JdController.SetupBodyPart(bodySegment1);
-        m_JdController.SetupBodyPart(bodySegment2);
-        m_JdController.SetupBodyPart(bodySegment3);
+        for (int i = 0; i < rnd; i++)
+        {
+            m_JdController.SetupBodyPart(bodySegments[i]);
+        }
+        if(rnd < bodySegments.Length)
+        {
+            bodySegments[rnd].gameObject.SetActive(false);
+        }
+        //m_JdController.SetupBodyPart(bodySegment0);
+        //m_JdController.SetupBodyPart(bodySegment1);
+        //m_JdController.SetupBodyPart(bodySegment2);
+        //m_JdController.SetupBodyPart(bodySegment3);
     }
 
 
@@ -67,7 +77,8 @@ public class WormAgent : Agent
         }
 
         //Random start rotation to help generalize
-        bodySegment0.rotation = Quaternion.Euler(0, Random.Range(0.0f, 360.0f), 0);
+        //bodySegment0.rotation = Quaternion.Euler(0, Random.Range(0.0f, 360.0f), 0);
+        bodySegments[0].rotation = Quaternion.Euler(0, Random.Range(0.0f, 360.0f), 0);
 
         UpdateOrientationObjects();
     }
@@ -86,11 +97,13 @@ public class WormAgent : Agent
         sensor.AddObservation(m_OrientationCube.transform.InverseTransformDirection(bp.rb.angularVelocity));
 
 
-        if (bp.rb.transform != bodySegment0)
+        if (bp.rb.transform != bodySegments[0])
         {
             //Get position relative to hips in the context of our orientation cube's space
+            //sensor.AddObservation(
+            //    m_OrientationCube.transform.InverseTransformDirection(bp.rb.position - bodySegment0.position));
             sensor.AddObservation(
-                m_OrientationCube.transform.InverseTransformDirection(bp.rb.position - bodySegment0.position));
+                m_OrientationCube.transform.InverseTransformDirection(bp.rb.position - bodySegments[0].position));
             sensor.AddObservation(bp.rb.transform.localRotation);
         }
 
@@ -102,7 +115,12 @@ public class WormAgent : Agent
     {
         RaycastHit hit;
         float maxDist = 10;
-        if (Physics.Raycast(bodySegment0.position, Vector3.down, out hit, maxDist))
+        //if (Physics.Raycast(bodySegment0.position, Vector3.down, out hit, maxDist)) // Mide distancia suelo
+        //{
+        //    sensor.AddObservation(hit.distance / maxDist);
+        //}
+        if (Physics.Raycast(bodySegments[0].position, Vector3.down, out hit, maxDist)) // Mide distancia suelo
+        //if (Physics.Raycast(bodySegment0.position, Vector3.down, out hit, maxDist))
         {
             sensor.AddObservation(hit.distance / maxDist);
         }
@@ -112,9 +130,12 @@ public class WormAgent : Agent
         var cubeForward = m_OrientationCube.transform.forward;
         var velGoal = cubeForward * m_MaxWalkingSpeed;
         sensor.AddObservation(m_OrientationCube.transform.InverseTransformDirection(velGoal));
+        //sensor.AddObservation(Quaternion.Angle(m_OrientationCube.transform.rotation,
+        //                          m_JdController.bodyPartsDict[bodySegment0].rb.rotation) / 180);
+        //sensor.AddObservation(Quaternion.FromToRotation(bodySegment0.forward, cubeForward));
         sensor.AddObservation(Quaternion.Angle(m_OrientationCube.transform.rotation,
-                                  m_JdController.bodyPartsDict[bodySegment0].rb.rotation) / 180);
-        sensor.AddObservation(Quaternion.FromToRotation(bodySegment0.forward, cubeForward));
+                                  m_JdController.bodyPartsDict[bodySegments[0]].rb.rotation) / 180);
+        sensor.AddObservation(Quaternion.FromToRotation(bodySegments[0].forward, cubeForward));
 
         //Add pos of target relative to orientation cube
         sensor.AddObservation(m_OrientationCube.transform.InverseTransformPoint(m_Target.transform.position));
@@ -141,19 +162,32 @@ public class WormAgent : Agent
         var i = -1;
         var continuousActions = actionBuffers.ContinuousActions;
         // Pick a new target joint rotation
-        bpDict[bodySegment0].SetJointTargetRotation(continuousActions[++i], continuousActions[++i], 0);
-        bpDict[bodySegment1].SetJointTargetRotation(continuousActions[++i], continuousActions[++i], 0);
-        bpDict[bodySegment2].SetJointTargetRotation(continuousActions[++i], continuousActions[++i], 0);
+        foreach(Transform segment in bodySegments)
+        {
+            if (segment.gameObject.activeSelf)
+            {
+                bpDict[segment].SetJointTargetRotation(continuousActions[++i], continuousActions[++i], 0);
+                bpDict[segment].SetJointStrength(continuousActions[++i]);
+            }
+        }
+        //bpDict[bodySegment0].SetJointTargetRotation(continuousActions[++i], continuousActions[++i], 0);
+        //bpDict[bodySegment1].SetJointTargetRotation(continuousActions[++i], continuousActions[++i], 0);
+        //bpDict[bodySegment2].SetJointTargetRotation(continuousActions[++i], continuousActions[++i], 0);
 
-        // Update joint strength
-        bpDict[bodySegment0].SetJointStrength(continuousActions[++i]);
-        bpDict[bodySegment1].SetJointStrength(continuousActions[++i]);
-        bpDict[bodySegment2].SetJointStrength(continuousActions[++i]);
+
+        //// Update joint strength
+        //bpDict[bodySegment0].SetJointStrength(continuousActions[++i]);
+        //bpDict[bodySegment1].SetJointStrength(continuousActions[++i]);
+        //bpDict[bodySegment2].SetJointStrength(continuousActions[++i]);
 
         //Reset if Worm fell through floor;
-        if (bodySegment0.position.y < m_StartingPos.y - 2)
+        //if (bodySegment0.position.y < m_StartingPos.y - 2)
+        //{
+        //    EndEpisode();
+        //}
+        if (bodySegments[0].position.y < m_StartingPos.y - 2)
         {
-            EndEpisode();
+           EndEpisode();
         }
     }
 
@@ -161,14 +195,19 @@ public class WormAgent : Agent
     {
         UpdateOrientationObjects();
 
-        var velReward =
+        //var velReward =
+        //    GetMatchingVelocityReward(m_OrientationCube.transform.forward * m_MaxWalkingSpeed,
+        //        m_JdController.bodyPartsDict[bodySegment0].rb.velocity);
+        var velReward = 
             GetMatchingVelocityReward(m_OrientationCube.transform.forward * m_MaxWalkingSpeed,
-                m_JdController.bodyPartsDict[bodySegment0].rb.velocity);
+                m_JdController.bodyPartsDict[bodySegments[0]].rb.velocity);
 
         //Angle of the rotation delta between cube and body.
         //This will range from (0, 180)
+        //var rotAngle = Quaternion.Angle(m_OrientationCube.transform.rotation,
+        //    m_JdController.bodyPartsDict[bodySegment0].rb.rotation);
         var rotAngle = Quaternion.Angle(m_OrientationCube.transform.rotation,
-            m_JdController.bodyPartsDict[bodySegment0].rb.rotation);
+            m_JdController.bodyPartsDict[bodySegments[0]].rb.rotation);
 
         //The reward for facing the target
         var facingRew = 0f;
@@ -202,7 +241,7 @@ public class WormAgent : Agent
     /// </summary>
     void UpdateOrientationObjects()
     {
-        m_OrientationCube.UpdateOrientation(bodySegment0, m_Target);
+        m_OrientationCube.UpdateOrientation(bodySegments[0], m_Target);
         if (m_DirectionIndicator)
         {
             m_DirectionIndicator.MatchOrientation(m_OrientationCube.transform);
