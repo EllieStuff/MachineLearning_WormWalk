@@ -12,7 +12,8 @@ public class WormAgent : Agent
     [Header("Target Prefabs")] public Transform TargetPrefab; //Target prefab to use in Dynamic envs
     private Transform m_Target; //Target the agent will walk towards during training.
 
-    [Header("Body Parts")] public Transform[] bodySegments; 
+    [Header("Body Parts")] public Transform[] bodySegments;
+    int actualBodyParts;
     //public Transform bodySegment0;
     //public Transform bodySegment1;
     //public Transform bodySegment2;
@@ -39,16 +40,20 @@ public class WormAgent : Agent
         m_JdController = GetComponent<JointDriveController>();
 
         UpdateOrientationObjects();
-        int rnd = Random.Range(3, bodySegments.Length - 1);
+        actualBodyParts = Random.Range(3, bodySegments.Length);
         //Setup each body part
-        for (int i = 0; i < rnd; i++)
+        for (int i = 0; i < bodySegments.Length; i++)
         {
-            m_JdController.SetupBodyPart(bodySegments[i]);
+            if(i < actualBodyParts)
+                m_JdController.SetupBodyPart(bodySegments[i]);
+            else
+                bodySegments[i].gameObject.SetActive(false);
         }
-        if(rnd < bodySegments.Length)
-        {
-            bodySegments[rnd].gameObject.SetActive(false);
-        }
+        
+        //if(rnd < bodySegments.Length - 1 )
+        //{
+        //    bodySegments[rnd + 1].gameObject.SetActive(false);
+        //}
         //m_JdController.SetupBodyPart(bodySegment0);
         //m_JdController.SetupBodyPart(bodySegment1);
         //m_JdController.SetupBodyPart(bodySegment2);
@@ -167,6 +172,13 @@ public class WormAgent : Agent
             if (segment.gameObject.activeSelf)
             {
                 bpDict[segment].SetJointTargetRotation(continuousActions[++i], continuousActions[++i], 0);
+                //bpDict[segment].SetJointStrength(continuousActions[++i]);
+            }
+        }
+        foreach (Transform segment in bodySegments)
+        {
+            if (segment.gameObject.activeSelf)
+            {
                 bpDict[segment].SetJointStrength(continuousActions[++i]);
             }
         }
