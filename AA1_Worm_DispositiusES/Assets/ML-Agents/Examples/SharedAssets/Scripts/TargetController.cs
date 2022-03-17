@@ -87,6 +87,7 @@ namespace Unity.MLAgentsExamples
                 onCollisionEnterEvent.Invoke(col);
                 if (respawnIfTouched)
                 {
+                    col.transform.parent.GetComponentInParent<WormAgent>().TouchedTarget();
                     MoveTargetToRandomPosition();
                 }
             }

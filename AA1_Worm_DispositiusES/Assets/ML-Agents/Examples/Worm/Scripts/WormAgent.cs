@@ -8,6 +8,8 @@ using Unity.MLAgents.Sensors;
 [RequireComponent(typeof(JointDriveController))] // Required to set joint forces
 public class WormAgent : Agent
 {
+    public bool isTrialWorm = false;
+
     const float m_MaxWalkingSpeed = 10; //The max walking speed
 
     [Header("Target Prefabs")] public Transform TargetPrefab; //Target prefab to use in Dynamic envs
@@ -41,14 +43,19 @@ public class WormAgent : Agent
         m_JdController = GetComponent<JointDriveController>();
 
         UpdateOrientationObjects();
-        actualBodyParts = /*Random.Range(3, bodySegments.Count)*/ bodySegments.Count;
+        //actualBodyParts = Random.Range(4, bodySegments.Count);
+        actualBodyParts = 4;
         //Setup each body part
         for (int i = 0; i < bodySegments.Count; i++)
         {
-            if(i < actualBodyParts)
+            if (i == actualBodyParts - 1)
+            {
+                // Do nothing
+            }
+            if (i < actualBodyParts)
                 m_JdController.SetupBodyPart(bodySegments[i]);
-            //else
-            //    bodySegments[i].gameObject.SetActive(false);
+            else
+                bodySegments[i].gameObject.SetActive(false);
         }
 
         //if(rnd < bodySegments.Length - 1 )
@@ -157,6 +164,18 @@ public class WormAgent : Agent
     public void TouchedTarget()
     {
         AddReward(1f);
+        if (actualBodyParts < bodySegments.Count && isTrialWorm)
+        {
+            bodySegments[actualBodyParts].gameObject.SetActive(true);
+            bodySegments[actualBodyParts - 1].gameObject.AddComponent<ConfigurableJoint>();
+            bodySegments[actualBodyParts - 1].gameObject.GetComponent<ConfigurableJoint>().connectedBody = bodySegments[actualBodyParts].gameObject.GetComponent<Rigidbody>();
+            Transform currBodySegment = bodySegments[actualBodyParts];
+            //Physics.IgnoreCollision(bodySegments[actualBodyParts].GetComponent<Collider>(), bodySegments[actualBodyParts - 1].GetComponent<Collider>());
+            //bodySegments[actualBodyParts].transform.position = bodySegments[actualBodyParts - 1].transform.position;
+            m_JdController.SetupBodyPart(bodySegments[actualBodyParts]);
+            actualBodyParts++;
+        }
+
     }
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
@@ -169,25 +188,22 @@ public class WormAgent : Agent
         // Pick a new target joint rotation
         foreach(Transform segment in bodySegments)
         {
-            if (segment.gameObject.GetComponent<ConfigurableJoint>() != null)
+            if (segment.gameObject.GetComponent<ConfigurableJoint>() != null && i < (actualBodyParts - 1) * 2)
             {
-
-
                 //if (segment.gameObject.activeInHierarchy)
                 //{
-                bpDict[segment].SetJointTargetRotation(continuousActions[++i], continuousActions[++i], 0);
-                //bpDict[segment].SetJointStrength(continuousActions[++i]);
+                    bpDict[segment].SetJointTargetRotation(continuousActions[++i], continuousActions[++i], 0);
                 //}
             }
         }
+        i = (actualBodyParts - 1) * 2;
         foreach (Transform segment in bodySegments)
         {
-            if (segment.gameObject.GetComponent<ConfigurableJoint>() != null)
+            if (segment.gameObject.GetComponent<ConfigurableJoint>() != null && i < bodySegments.Count)
             {
-
                 //if (segment.gameObject.activeInHierarchy)
                 //{
-                bpDict[segment].SetJointStrength(continuousActions[++i]);
+                    bpDict[segment].SetJointStrength(continuousActions[++i]);
                 //}
             }
         }
@@ -268,4 +284,12 @@ public class WormAgent : Agent
             m_DirectionIndicator.MatchOrientation(m_OrientationCube.transform);
         }
     }
+
+    //private void OnCollisionEnter(Collision col)
+    //{
+    //    if (col.gameObject.CompareTag("target"))
+    //    {
+    //        TouchedTarget();
+    //    }
+    //}
 }
