@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
@@ -12,7 +13,7 @@ public class WormAgent : Agent
     [Header("Target Prefabs")] public Transform TargetPrefab; //Target prefab to use in Dynamic envs
     private Transform m_Target; //Target the agent will walk towards during training.
 
-    [Header("Body Parts")] public Transform[] bodySegments;
+    [Header("Body Parts")] public List<Transform> bodySegments;
     int actualBodyParts;
     //public Transform bodySegment0;
     //public Transform bodySegment1;
@@ -40,16 +41,16 @@ public class WormAgent : Agent
         m_JdController = GetComponent<JointDriveController>();
 
         UpdateOrientationObjects();
-        actualBodyParts = Random.Range(3, bodySegments.Length);
+        actualBodyParts = /*Random.Range(3, bodySegments.Count)*/ bodySegments.Count;
         //Setup each body part
-        for (int i = 0; i < bodySegments.Length; i++)
+        for (int i = 0; i < bodySegments.Count; i++)
         {
             if(i < actualBodyParts)
                 m_JdController.SetupBodyPart(bodySegments[i]);
-            else
-                bodySegments[i].gameObject.SetActive(false);
+            //else
+            //    bodySegments[i].gameObject.SetActive(false);
         }
-        
+
         //if(rnd < bodySegments.Length - 1 )
         //{
         //    bodySegments[rnd + 1].gameObject.SetActive(false);
@@ -59,7 +60,7 @@ public class WormAgent : Agent
         //m_JdController.SetupBodyPart(bodySegment2);
         //m_JdController.SetupBodyPart(bodySegment3);
     }
-
+    
 
     /// <summary>
     /// Spawns a target prefab at pos
@@ -125,7 +126,6 @@ public class WormAgent : Agent
         //    sensor.AddObservation(hit.distance / maxDist);
         //}
         if (Physics.Raycast(bodySegments[0].position, Vector3.down, out hit, maxDist)) // Mide distancia suelo
-        //if (Physics.Raycast(bodySegment0.position, Vector3.down, out hit, maxDist))
         {
             sensor.AddObservation(hit.distance / maxDist);
         }
@@ -169,17 +169,26 @@ public class WormAgent : Agent
         // Pick a new target joint rotation
         foreach(Transform segment in bodySegments)
         {
-            if (segment.gameObject.activeSelf)
+            if (segment.gameObject.GetComponent<ConfigurableJoint>() != null)
             {
+
+
+                //if (segment.gameObject.activeInHierarchy)
+                //{
                 bpDict[segment].SetJointTargetRotation(continuousActions[++i], continuousActions[++i], 0);
                 //bpDict[segment].SetJointStrength(continuousActions[++i]);
+                //}
             }
         }
         foreach (Transform segment in bodySegments)
         {
-            if (segment.gameObject.activeSelf)
+            if (segment.gameObject.GetComponent<ConfigurableJoint>() != null)
             {
+
+                //if (segment.gameObject.activeInHierarchy)
+                //{
                 bpDict[segment].SetJointStrength(continuousActions[++i]);
+                //}
             }
         }
         //bpDict[bodySegment0].SetJointTargetRotation(continuousActions[++i], continuousActions[++i], 0);
