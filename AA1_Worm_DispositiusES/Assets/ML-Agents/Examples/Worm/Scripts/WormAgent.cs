@@ -57,7 +57,11 @@ public class WormAgent : Agent
             else if (i < actualBodyParts)
                 m_JdController.SetupBodyPart(bodySegments[i]);
             else
-                bodySegments[i].gameObject.SetActive(false);
+            {
+                //bodySegments[i].gameObject.SetActive(false);
+                bodySegments[i].gameObject.GetComponentInChildren<MeshRenderer>().enabled = false;
+                bodySegments[i].gameObject.GetComponentInChildren<CapsuleCollider>().enabled = false;
+            }
         }
 
         //if(rnd < bodySegments.Length - 1 )
@@ -154,6 +158,9 @@ public class WormAgent : Agent
         //Add pos of target relative to orientation cube
         sensor.AddObservation(m_OrientationCube.transform.InverseTransformPoint(m_Target.transform.position));
 
+        //Add number of current pieces
+        sensor.AddObservation(actualBodyParts);
+
         foreach (var bodyPart in m_JdController.bodyPartsList)
         {
             CollectObservationBodyPart(bodyPart, sensor);
@@ -225,21 +232,23 @@ public class WormAgent : Agent
         if (touchedTarget)
         {
             touchedTarget = false;
-            if (actualBodyParts < bodySegments.Count && isTrialWorm)
+            if (actualBodyParts < bodySegments.Count)
             {
-                bodySegments[actualBodyParts].gameObject.SetActive(true);
-                bodySegments[actualBodyParts - 1].gameObject.AddComponent<ConfigurableJoint>();
-                GameObject jointGO = bodySegments[actualBodyParts - 1].gameObject;
-                ConfigurableJoint prevJoint = bodySegments[actualBodyParts - 2].gameObject.GetComponent<ConfigurableJoint>();
-                jointGO.GetComponent<ConfigurableJoint>().xMotion = prevJoint.xMotion;
-                jointGO.GetComponent<ConfigurableJoint>().yMotion = prevJoint.yMotion;
-                jointGO.GetComponent<ConfigurableJoint>().zMotion = prevJoint.zMotion;
-                jointGO.GetComponent<ConfigurableJoint>().angularXMotion = prevJoint.angularXMotion;
-                jointGO.GetComponent<ConfigurableJoint>().angularYMotion = prevJoint.angularYMotion;
-                jointGO.GetComponent<ConfigurableJoint>().angularZMotion = prevJoint.angularZMotion;
-                
-                
-                jointGO.GetComponent<ConfigurableJoint>().connectedBody = bodySegments[actualBodyParts].gameObject.GetComponent<Rigidbody>();
+                //bodySegments[actualBodyParts].gameObject.SetActive(true);
+                bodySegments[actualBodyParts].gameObject.GetComponentInChildren<MeshRenderer>().enabled = true;
+                bodySegments[actualBodyParts].gameObject.GetComponentInChildren<CapsuleCollider>().enabled = true;
+                //bodySegments[actualBodyParts - 1].gameObject.AddComponent<ConfigurableJoint>();
+                //GameObject jointGO = bodySegments[actualBodyParts - 1].gameObject;
+                //ConfigurableJoint prevJoint = bodySegments[actualBodyParts - 2].gameObject.GetComponent<ConfigurableJoint>();
+                //jointGO.GetComponent<ConfigurableJoint>().xMotion = prevJoint.xMotion;
+                //jointGO.GetComponent<ConfigurableJoint>().yMotion = prevJoint.yMotion;
+                //jointGO.GetComponent<ConfigurableJoint>().zMotion = prevJoint.zMotion;
+                //jointGO.GetComponent<ConfigurableJoint>().angularXMotion = prevJoint.angularXMotion;
+                //jointGO.GetComponent<ConfigurableJoint>().angularYMotion = prevJoint.angularYMotion;
+                //jointGO.GetComponent<ConfigurableJoint>().angularZMotion = prevJoint.angularZMotion;
+
+
+                //jointGO.GetComponent<ConfigurableJoint>().connectedBody = bodySegments[actualBodyParts].gameObject.GetComponent<Rigidbody>();
 
 
                 //joint.connectedBody = bodySegments[actualBodyParts].gameObject.GetComponent<Rigidbody>();
@@ -306,11 +315,12 @@ public class WormAgent : Agent
         }
     }
 
-    //private void OnCollisionEnter(Collision col)
-    //{
-    //    if (col.gameObject.CompareTag("target"))
-    //    {
-    //        TouchedTarget();
-    //    }
-    //}
+    private void OnCollisionEnter(Collision col)
+    {
+        if (col.gameObject.CompareTag("bodySeg"))
+        {
+            AddReward(-1.0f);
+            EndEpisode();
+        }
+    }
 }

@@ -910,6 +910,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0
       objectReference: {fileID: 0}
+    - target: {fileID: 3293797121200124911, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
+      propertyPath: m_TagString
+      value: bodySeg
+      objectReference: {fileID: 0}
+    - target: {fileID: 3535734812498377617, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
+      propertyPath: m_TagString
+      value: bodySeg
+      objectReference: {fileID: 0}
     - target: {fileID: 3796046526490476272, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.75
@@ -926,6 +934,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4363568566654323843, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
+      propertyPath: m_TagString
+      value: bodySeg
+      objectReference: {fileID: 0}
     - target: {fileID: 4363568567438618963, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
       propertyPath: isTrialWorm
       value: 1
@@ -937,6 +949,14 @@ PrefabInstance:
     - target: {fileID: 4363568567843440885, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
       propertyPath: m_ConnectedAnchor.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4363568567843440887, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
+      propertyPath: m_TagString
+      value: bodySeg
+      objectReference: {fileID: 0}
+    - target: {fileID: 5034922015354599852, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
+      propertyPath: m_TagString
+      value: bodySeg
       objectReference: {fileID: 0}
     - target: {fileID: 5426910371254064974, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
       propertyPath: m_Anchor.y
@@ -957,14 +977,14 @@ PrefabInstance:
     - target: {fileID: 5495789640682576473, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
       propertyPath: m_ConnectedBody
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1018195920}
     - target: {fileID: 5495789640682576473, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
       propertyPath: m_ConnectedAnchor.y
-      value: 1.6491433
+      value: 0.6600002
       objectReference: {fileID: 0}
     - target: {fileID: 5495789640682576473, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
       propertyPath: m_ConnectedAnchor.z
-      value: -4.74
+      value: 0.00000011920929
       objectReference: {fileID: 0}
     - target: {fileID: 5495789640682576473, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
       propertyPath: m_AutoConfigureConnectedAnchor
@@ -1038,9 +1058,114 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 5495789640682576473, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
+--- !u!1 &1018195918 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3535734812498377617, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
+  m_PrefabInstance: {fileID: 956508937}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &1018195920 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 4109179205834922599, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
+  m_PrefabInstance: {fileID: 956508937}
+  m_PrefabAsset: {fileID: 0}
+--- !u!153 &1018195922
+ConfigurableJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1018195918}
+  m_ConnectedBody: {fileID: 2112749644}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_Anchor: {x: 0, y: -0.45, z: 0}
+  m_Axis: {x: 1, y: 0, z: 0}
+  m_AutoConfigureConnectedAnchor: 1
+  m_ConnectedAnchor: {x: 0, y: -0.44999945, z: -0.00000011920929}
+  serializedVersion: 2
+  m_SecondaryAxis: {x: 0, y: 0, z: -1}
+  m_XMotion: 0
+  m_YMotion: 0
+  m_ZMotion: 0
+  m_AngularXMotion: 1
+  m_AngularYMotion: 1
+  m_AngularZMotion: 0
+  m_LinearLimitSpring:
+    spring: 0
+    damper: 0
+  m_LinearLimit:
+    limit: 0
+    bounciness: 0
+    contactDistance: 0
+  m_AngularXLimitSpring:
+    spring: 0
+    damper: 0
+  m_LowAngularXLimit:
+    limit: -60
+    bounciness: 0
+    contactDistance: 0
+  m_HighAngularXLimit:
+    limit: 60
+    bounciness: 0
+    contactDistance: 0
+  m_AngularYZLimitSpring:
+    spring: 0
+    damper: 0
+  m_AngularYLimit:
+    limit: 60
+    bounciness: 0
+    contactDistance: 0
+  m_AngularZLimit:
+    limit: 0
+    bounciness: 0
+    contactDistance: 0
+  m_TargetPosition: {x: 0, y: 0, z: 0}
+  m_TargetVelocity: {x: 0, y: 0, z: 0}
+  m_XDrive:
+    serializedVersion: 3
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+  m_YDrive:
+    serializedVersion: 3
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+  m_ZDrive:
+    serializedVersion: 3
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+  m_TargetRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_TargetAngularVelocity: {x: 0, y: 0, z: 0}
+  m_RotationDriveMode: 1
+  m_AngularXDrive:
+    serializedVersion: 3
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+  m_AngularYZDrive:
+    serializedVersion: 3
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+  m_SlerpDrive:
+    serializedVersion: 3
+    positionSpring: 1
+    positionDamper: 1
+    maximumForce: 3.4028233e+38
+  m_ProjectionMode: 1
+  m_ProjectionDistance: 0.1
+  m_ProjectionAngle: 180
+  m_ConfiguredInWorldSpace: 0
+  m_SwapBodies: 0
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1001 &1193517599
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1751,3 +1876,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d6f3eab3776b4fb79724ac4216dfd7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!54 &2112749644 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 6818144183996781975, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
+  m_PrefabInstance: {fileID: 956508937}
+  m_PrefabAsset: {fileID: 0}
