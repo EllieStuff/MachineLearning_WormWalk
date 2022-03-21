@@ -945,14 +945,14 @@ PrefabInstance:
     - target: {fileID: 5426910371254064974, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
       propertyPath: m_ConnectedBody
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1433394967}
     - target: {fileID: 5426910371254064974, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
       propertyPath: m_ConnectedAnchor.y
-      value: 1.6494414
+      value: 0.35000026
       objectReference: {fileID: 0}
     - target: {fileID: 5426910371254064974, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
       propertyPath: m_ConnectedAnchor.z
-      value: -3.9399996
+      value: 0.00000011920929
       objectReference: {fileID: 0}
     - target: {fileID: 5495789640682576473, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
       propertyPath: m_ConnectedBody
@@ -1039,7 +1039,6 @@ PrefabInstance:
       value: -0
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 5426910371254064974, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
     - {fileID: 5495789640682576473, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
 --- !u!1001 &1193517599
@@ -1293,6 +1292,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 146995241}
   smoothingTime: 0.5
+--- !u!54 &1433394967 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 7381565457758009626, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
+  m_PrefabInstance: {fileID: 956508937}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1481808307
 PrefabInstance:
   m_ObjectHideFlags: 0

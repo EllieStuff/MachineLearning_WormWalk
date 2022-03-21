@@ -229,7 +229,20 @@ public class WormAgent : Agent
             {
                 bodySegments[actualBodyParts].gameObject.SetActive(true);
                 bodySegments[actualBodyParts - 1].gameObject.AddComponent<ConfigurableJoint>();
-                bodySegments[actualBodyParts - 1].gameObject.GetComponent<ConfigurableJoint>().connectedBody = bodySegments[actualBodyParts].gameObject.GetComponent<Rigidbody>();
+                GameObject jointGO = bodySegments[actualBodyParts - 1].gameObject;
+                ConfigurableJoint prevJoint = bodySegments[actualBodyParts - 2].gameObject.GetComponent<ConfigurableJoint>();
+                jointGO.GetComponent<ConfigurableJoint>().xMotion = prevJoint.xMotion;
+                jointGO.GetComponent<ConfigurableJoint>().yMotion = prevJoint.yMotion;
+                jointGO.GetComponent<ConfigurableJoint>().zMotion = prevJoint.zMotion;
+                jointGO.GetComponent<ConfigurableJoint>().angularXMotion = prevJoint.angularXMotion;
+                jointGO.GetComponent<ConfigurableJoint>().angularYMotion = prevJoint.angularYMotion;
+                jointGO.GetComponent<ConfigurableJoint>().angularZMotion = prevJoint.angularZMotion;
+                
+                
+                jointGO.GetComponent<ConfigurableJoint>().connectedBody = bodySegments[actualBodyParts].gameObject.GetComponent<Rigidbody>();
+
+
+                //joint.connectedBody = bodySegments[actualBodyParts].gameObject.GetComponent<Rigidbody>();
                 //Transform currBodySegment = bodySegments[actualBodyParts];
                 //Physics.IgnoreCollision(bodySegments[actualBodyParts].GetComponent<Collider>(), bodySegments[actualBodyParts - 1].GetComponent<Collider>());
                 //bodySegments[actualBodyParts].transform.position = bodySegments[actualBodyParts - 1].transform.position;
