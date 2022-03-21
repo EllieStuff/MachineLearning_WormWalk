@@ -1425,6 +1425,7 @@ MonoBehaviour:
   - {fileID: 8015658015747377607}
   - {fileID: 8762500176290183350}
   - {fileID: 3236964893744321098}
+  actualBodyParts: 4
 --- !u!114 &7430253518223459947
 MonoBehaviour:
   m_ObjectHideFlags: 0
