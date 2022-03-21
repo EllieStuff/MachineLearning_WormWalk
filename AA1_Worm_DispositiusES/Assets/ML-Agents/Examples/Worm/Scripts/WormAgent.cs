@@ -22,6 +22,8 @@ public class WormAgent : Agent
     //public Transform bodySegment2;
     //public Transform bodySegment3;
 
+    bool touchedTarget = false;
+
     //This will be used as a stabilized model space reference point for observations
     //Because ragdolls can move erratically during training, using a stabilized reference transform improves learning
     OrientationCubeController m_OrientationCube;
@@ -44,7 +46,7 @@ public class WormAgent : Agent
 
         UpdateOrientationObjects();
         //actualBodyParts = Random.Range(4, bodySegments.Count);
-        actualBodyParts = 4;
+        actualBodyParts = 5;
         //Setup each body part
         for (int i = 0; i < bodySegments.Count; i++)
         {
@@ -52,7 +54,7 @@ public class WormAgent : Agent
             {
                 // Do nothing
             }
-            if (i < actualBodyParts)
+            else if (i < actualBodyParts)
                 m_JdController.SetupBodyPart(bodySegments[i]);
             else
                 bodySegments[i].gameObject.SetActive(false);
@@ -164,17 +166,7 @@ public class WormAgent : Agent
     public void TouchedTarget()
     {
         AddReward(1f);
-        if (actualBodyParts < bodySegments.Count && isTrialWorm)
-        {
-            bodySegments[actualBodyParts].gameObject.SetActive(true);
-            bodySegments[actualBodyParts - 1].gameObject.AddComponent<ConfigurableJoint>();
-            bodySegments[actualBodyParts - 1].gameObject.GetComponent<ConfigurableJoint>().connectedBody = bodySegments[actualBodyParts].gameObject.GetComponent<Rigidbody>();
-            Transform currBodySegment = bodySegments[actualBodyParts];
-            //Physics.IgnoreCollision(bodySegments[actualBodyParts].GetComponent<Collider>(), bodySegments[actualBodyParts - 1].GetComponent<Collider>());
-            //bodySegments[actualBodyParts].transform.position = bodySegments[actualBodyParts - 1].transform.position;
-            m_JdController.SetupBodyPart(bodySegments[actualBodyParts]);
-            actualBodyParts++;
-        }
+        touchedTarget = true;
 
     }
 
@@ -188,7 +180,7 @@ public class WormAgent : Agent
         // Pick a new target joint rotation
         foreach(Transform segment in bodySegments)
         {
-            if (segment.gameObject.GetComponent<ConfigurableJoint>() != null && i < (actualBodyParts - 1) * 2)
+            if (segment.gameObject.GetComponent<ConfigurableJoint>() != null && i < (actualBodyParts - 2) * 2)
             {
                 //if (segment.gameObject.activeInHierarchy)
                 //{
@@ -196,7 +188,7 @@ public class WormAgent : Agent
                 //}
             }
         }
-        i = (actualBodyParts - 1) * 2;
+        i = (actualBodyParts - 2) * 2;
         foreach (Transform segment in bodySegments)
         {
             if (segment.gameObject.GetComponent<ConfigurableJoint>() != null && i < bodySegments.Count)
@@ -230,6 +222,22 @@ public class WormAgent : Agent
 
     void FixedUpdate()
     {
+        if (touchedTarget)
+        {
+            touchedTarget = false;
+            if (actualBodyParts < bodySegments.Count && isTrialWorm)
+            {
+                bodySegments[actualBodyParts].gameObject.SetActive(true);
+                bodySegments[actualBodyParts - 1].gameObject.AddComponent<ConfigurableJoint>();
+                bodySegments[actualBodyParts - 1].gameObject.GetComponent<ConfigurableJoint>().connectedBody = bodySegments[actualBodyParts].gameObject.GetComponent<Rigidbody>();
+                //Transform currBodySegment = bodySegments[actualBodyParts];
+                //Physics.IgnoreCollision(bodySegments[actualBodyParts].GetComponent<Collider>(), bodySegments[actualBodyParts - 1].GetComponent<Collider>());
+                //bodySegments[actualBodyParts].transform.position = bodySegments[actualBodyParts - 1].transform.position;
+                m_JdController.SetupBodyPart(bodySegments[actualBodyParts - 1]);
+                actualBodyParts++;
+            }
+        }
+
         UpdateOrientationObjects();
 
         //var velReward =
