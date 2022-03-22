@@ -320,7 +320,7 @@ public class WormAgent : Agent
 
     private void OnCollisionEnter(Collision col)
     {
-        if (col.gameObject.CompareTag("bodySeg"))
+        if (col.gameObject.CompareTag("bodySeg") || col.gameObject.CompareTag("ceiling"))
         {
             AddReward(-1.0f);
             EndEpisode();

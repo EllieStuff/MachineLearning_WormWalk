@@ -8,6 +8,9 @@ TagManager:
   - target
   - ground
   - bodySeg
+  - symbol_O
+  - symbol_X
+  - ceiling
   layers:
   - Default
   - TransparentFX
