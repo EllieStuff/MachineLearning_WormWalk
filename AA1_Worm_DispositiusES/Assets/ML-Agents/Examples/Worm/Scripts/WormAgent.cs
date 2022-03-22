@@ -59,8 +59,9 @@ public class WormAgent : Agent
             {
                 //bodySegments[i].gameObject.SetActive(false);
                 bodySegments[i].gameObject.GetComponentInChildren<MeshRenderer>().enabled = false;
-                bodySegments[i].transform.GetChild(0).GetComponentInChildren<MeshRenderer>().enabled = false;
-                bodySegments[i].gameObject.GetComponentInChildren<CapsuleCollider>().enabled = false;
+                bodySegments[i].transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+                //bodySegments[i].transform.GetChild(0).GetComponentInChildren<MeshRenderer>().enabled = false;
+                //bodySegments[i].gameObject.GetComponentInChildren<CapsuleCollider>().enabled = false;
                 bodySegments[i].gameObject.GetComponentInChildren<Rigidbody>().useGravity = false;
             }
         }
@@ -237,8 +238,8 @@ public class WormAgent : Agent
             {
                 //bodySegments[actualBodyParts].gameObject.SetActive(true);
                 bodySegments[actualBodyParts].gameObject.GetComponentInChildren<MeshRenderer>().enabled = true;
-                bodySegments[actualBodyParts].transform.GetChild(0).GetComponentInChildren<MeshRenderer>().enabled = true;
-                bodySegments[actualBodyParts].gameObject.GetComponentInChildren<CapsuleCollider>().enabled = true;
+                bodySegments[actualBodyParts].transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+                //bodySegments[actualBodyParts].gameObject.GetComponentInChildren<CapsuleCollider>().enabled = true;
                 bodySegments[actualBodyParts].gameObject.GetComponentInChildren<Rigidbody>().useGravity = true;
                 //bodySegments[actualBodyParts - 1].gameObject.AddComponent<ConfigurableJoint>();
                 //GameObject jointGO = bodySegments[actualBodyParts - 1].gameObject;
