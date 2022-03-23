@@ -200,7 +200,7 @@ public class WormAgent : Agent
         i = (actualBodyParts - 2) * 2;
         foreach (Transform segment in bodySegments)
         {
-            if (segment.gameObject.GetComponent<ConfigurableJoint>() != null && i < bodySegments.Count)
+            if (segment.gameObject.GetComponent<ConfigurableJoint>() != null && i < (actualBodyParts - 2) * 3)
             {
                 //if (segment.gameObject.activeInHierarchy)
                 //{
