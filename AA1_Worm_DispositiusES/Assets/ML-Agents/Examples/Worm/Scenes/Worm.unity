@@ -938,6 +938,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: bodySeg
       objectReference: {fileID: 0}
+    - target: {fileID: 4363568567438618962, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 3d40ee687e79cb145b0a66c64d51266c, type: 3}
     - target: {fileID: 4363568567438618963, guid: 75720cc09f5b24833af829458ac467fa, type: 3}
       propertyPath: isTrialWorm
       value: 1
